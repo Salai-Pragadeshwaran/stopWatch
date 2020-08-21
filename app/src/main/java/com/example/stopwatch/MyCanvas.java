@@ -22,6 +22,7 @@ public class MyCanvas extends View {
     Paint circlePaint1 = new Paint();
     Paint circlePaint2 = new Paint();
     Paint linePaint2 = new Paint();
+    Paint linePaint3 = new Paint();
     Paint whitePaint1 = new Paint();
 
     public MyCanvas(Context context) {
@@ -62,6 +63,11 @@ public class MyCanvas extends View {
         linePaint2.setStrokeWidth(10);
         linePaint2.isAntiAlias();
 
+        linePaint3.setColor(getResources().getColor(R.color.circlePaint));
+        linePaint3.setStyle(Paint.Style.STROKE);
+        linePaint3.setStrokeWidth(5);
+        linePaint3.isAntiAlias();
+
         whitePaint1.setColor(getResources().getColor(R.color.circlePaint));
         whitePaint1.setStyle(Paint.Style.FILL);
         whitePaint1.isAntiAlias();
@@ -74,11 +80,35 @@ public class MyCanvas extends View {
         canvas.drawColor(getResources().getColor(R.color.canvasBg));
         //clock outline
         drawCircles(canvas);
+        drawDivisions(canvas);
         drawSecondHand(canvas); // and minute hand
         canvas.drawCircle(canvasSize/2, canvasSize/2 , canvasSize*0.03F , whitePaint1);
         canvas.drawCircle(canvasSize/2, canvasSize/3 , canvasSize*0.01F , whitePaint1);
-       // canvas.drawCircle(100, 100 , 50 , circlePaint);
-        postInvalidate();
+        //postInvalidate();
+    }
+
+    private void drawDivisions(Canvas canvas) {
+        Float centre = canvasSize/2;
+        Float centreMinute = canvasSize/3;
+        double angleInRadians = 0;
+        Float divX;
+        Float divY;
+        for(int i = 0; i<12; i++){
+            divX = ((float) Math.cos(angleInRadians));
+            divY = ((float) Math.sin(angleInRadians));
+            canvas.drawLine( centre + (canvasSize*0.33F*divX), centre + (canvasSize*0.33F*divY),
+                    centre + (canvasSize*0.4F*divX), centre + (canvasSize*0.4F*divY), linePaint2);
+            canvas.drawLine(centre + (canvasSize*0.08F*divX), centreMinute + (canvasSize*0.08F*divY),
+                    centre + (canvasSize*0.1F*divX), centreMinute + (canvasSize*0.1F*divY), linePaint3);
+            angleInRadians += 3.14/30;
+            for(int j=0; j<4; j++){
+                divX = ((float) Math.cos(angleInRadians));
+                divY = ((float) Math.sin(angleInRadians));
+                canvas.drawLine( centre + (canvasSize*0.37F*divX), centre + (canvasSize*0.37F*divY),
+                        centre + (canvasSize*0.4F*divX), centre + (canvasSize*0.4F*divY), linePaint3);
+                angleInRadians += 3.14/30;
+            }
+        }
     }
 
     private void drawSecondHand(Canvas canvas) {
@@ -102,6 +132,7 @@ public class MyCanvas extends View {
             canvas.drawLine(centre, centre, centre + secondX, centre + secondY, linePaint2);
             canvas.drawLine(centre, centreMinute, centre + minuteX, centreMinute + minuteY, linePaint2);
         }
+        postInvalidate();
     }
 
     private void drawCircles(Canvas canvas) {
